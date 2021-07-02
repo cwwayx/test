@@ -1,0 +1,40 @@
+<form novalidate #f="ngForm" >
+    <label>
+        <span>地址邮件地址：</span>
+        <input type="text" name="email" placeholder="输入邮件地址"  >
+    </label>
+    <div>
+        <label>
+            <span>密码：</span>
+            <input type="text" name="email" placeholder="输入密码">
+        </label>
+        <label>
+            <span>确认密码：</span>
+            <input type="text" name="email" placeholder="再次输入密码">
+        </label>
+    </div>
+    <div ngModelGroup="user.address">
+        <label>
+            <span>省份：</span>
+            <select name="province" [(ngModel)]="user.address.province">
+                <option value="">请选择省份</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </label>
+        <label>
+            <span>城市：</span>
+            <select name="city">
+                <option value="">请选择城市</option>
+            </select>
+        </label>
+        <label>
+            <span>区县：</span>
+            <select name="area">
+                <option value="">请选择区县</option>
+            </select>
+        </label>
+    </div>
+    <button type="submit">注册</button>
+</form>
+{{ f.value | json }}
