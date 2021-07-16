@@ -1,40 +1,56 @@
-<form novalidate #f="ngForm" >
-    <label>
-        <span>地址邮件地址：</span>
-        <input type="text" name="email" placeholder="输入邮件地址"  >
-    </label>
+<form novalidate #f="ngForm" (ngSubmit)="onSubmit(f,$event)" >
     <div>
-        <label>
+        <span>地址邮件地址：</span>
+        <input type="text" name="email" placeholder="输入邮件地址" [(ngModel)]="user.email"  #email="ngModel"
+        required pattern="([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,4}" >
+        <!--  <span>{{f.controls.email?.errors | json}}</span>    -->
+        <span *ngIf="email.errors?.required && email.touched" class="error">  必须填写邮件</span>
+        <span *ngIf="email.errors?.pattern && email.touched" class="error">  格式不正确</span>
+    </div>
+    <div>
+        <div>
             <span>密码：</span>
-            <input type="text" name="email" placeholder="输入密码">
-        </label>
-        <label>
+            <input type="text" name="password" placeholder="输入密码" validateEqual="repeat" reverse="true" #password="ngModel"
+                required minlength="8" [(ngModel)]="user.password">
+                <span *ngIf="password.errors?.required && password.touched" class="error">  必须填写密码</span>
+                <span *ngIf="password.errors?.minlength && password.touched" class="error"> 密码必须8位数以上</span>
+        </div>
+        <div>
             <span>确认密码：</span>
-            <input type="text" name="email" placeholder="再次输入密码">
-        </label>
+            <input type="text" name="repeat" placeholder="再次输入密码" validateEqual="password" reverse="false"  #repeat="ngModel"
+                required minlength="8" [(ngModel)]="user.repeat" >
+                <span *ngIf="repeat.errors?.required && repeat.touched" class="error">  必须填写密码</span>
+                <span *ngIf="repeat.errors?.minlength && repeat.touched" class="error"> 密码必须8位数以上</span>
+                <span *ngIf="repeat.errors?.validateEqual && repeat.touched" class="error"> 2次输入的密码不一致</span>
+        </div>
     </div>
     <div ngModelGroup="user.address">
-        <label>
+        <div>
             <span>省份：</span>
             <select name="province" [(ngModel)]="user.address.province">
                 <option value="">请选择省份</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
             </select>
-        </label>
-        <label>
+        </div>
+        <div>
             <span>城市：</span>
-            <select name="city">
-                <option value="">请选择城市</option>
+            <select name="city"  [(ngModel)]="user.address.city">
+                <option value="">请选择城市</option> 
+                <option value="1">1</option>
+                <option value="2">2</option>
             </select>
-        </label>
-        <label>
+        </div>
+        <div>
             <span>区县：</span>
-            <select name="area">
+            <select name="area" [(ngModel)]="user.address.area">
                 <option value="">请选择区县</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
             </select>
-        </label>
+        </div>
     </div>
-    <button type="submit">注册</button>
+    <button type="submit" [disabled]="f.invalid">注册</button>
 </form>
 {{ f.value | json }}
+{{ f.invalid | json }}

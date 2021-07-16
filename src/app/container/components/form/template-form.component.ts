@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';  
+import { Component, OnInit } from '@angular/core';   
 import { User } from '../../entities/User';  
 
 @Component({
   selector: 'app-template-form',
   templateUrl: './template-form.component.html',
   styleUrls: ['./template-form.component.scss']
+  
 })
 export class TemplateFormComponent implements OnInit {
   user: User = {
-    email: '123123',
+    email: '',
     password: '',
     repeat: '',
     address: {
@@ -23,4 +24,11 @@ export class TemplateFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onSubmit({value, valid}, event: Event) {
+    if(valid){
+      console.log(value);
+    }
+    event.preventDefault();
+  }
+  
 }
