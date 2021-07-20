@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl,FormGroup,Validators,FormBuilder,ValidationErrors } from '@angular/forms';
+import { FormControl,FormGroup,Validators,FormBuilder,ValidationErrors,AbstractControl,FormArray } from '@angular/forms';
 import { User } from '../../entities/User';  
 import {RepeatValidatorDirective} from '../../validator/repeat-validator.directive'
 
@@ -14,6 +14,7 @@ export class ReactiveFormComponent implements OnInit {
   user: FormGroup; 
 
   constructor(private fb: FormBuilder) { 
+
   }
 
   validateGroup(password: string,confirmPassword: string): ValidationErrors | null {
@@ -30,18 +31,46 @@ export class ReactiveFormComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.fb.group(
       {
-        email: ['',[Validators.required,Validators.email]],
+        email: ['',[Validators.required,Validators.pattern(/([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,4}/)]],
         password: ['',Validators.required],
         repeat: ['',Validators.required],
-        address: this.fb.group({
-          province: [],
-          city: [],
-          area: [],
-          address: []
-        })
+        addrs:this.fb.array([])
       },
-      //{validator: this.validateGroup('password','repeat')}
+      {validator: this.validateEqual('password','repeat')}
     );
+    this.user.controls['email'].valueChanges.subscribe((value)=>{
+      console.log(value);
+    })
   }
 
+  addAddr(): void{
+      (<FormArray> this.user.controls['addrs']).push(
+        this.fb.group({
+          province:[],
+          city:[],
+          area:[],
+          addr:[]
+        })
+      );
+  }
+ 
+
+  
+validateEqual(passwordKey: string,confirmPasswordKey: string): ValidatorFn {
+  return (group: FormGroup): {[key: string]: any} => {
+    const password = group.controls[passwordKey];
+    const confirmPassword = group.controls[confirmPasswordKey];
+    if(password.value !== confirmPassword.value){
+      return {validateEqual: true};
+    }
+    return null;
+  };
 }
+
+}
+
+
+export interface ValidatorFn  {
+  (c: AbstractControl): ValidationErrors | null;
+}
+ 

@@ -1,44 +1,59 @@
-<form  >
+
+<form [formGroup]="user" >
     <div>
         <span>地址邮件地址：</span>
         <input type="text" formControlName="email" placeholder="输入邮件地址" >
-        <!--  <span>{{f.controls.email?.errors | json}}</span>    --> 
+        <!--  <span class="error">{{user.controls.email?.errors | json}}</span> -->
+        <span *ngIf="user.get('email').hasError('required') && user.get('email').touched" class="error">  必须填写邮件</span>
+        <span *ngIf="user.get('email').hasError('pattern') && user.get('email').touched" class="error">  邮件格式不正确</span> 
     </div>
     <div>
         <div>
             <span>密码：</span>
             <input type="text" formControlName="password" placeholder="输入密码"  > 
+            <span *ngIf="user.get('password').hasError('required') && user.get('password').touched" class="error">  必须填写密码</span>
+            <!--  <span class="error">{{user.controls.password?.errors | json}}</span> -->
         </div>
         <div>
             <span>确认密码：</span>
             <input type="text" formControlName="repeat" placeholder="再次输入密码"  > 
+            <span *ngIf="user.get('repeat').hasError('required') && user.get('repeat').touched" class="error">  必须填写确认密码</span> 
+            <span *ngIf="user.hasError('validateEqual') && user.get('repeat').touched" class="error">  两次输入的密码不一致</span> 
+            <!--  <span class="error">{{user.controls.repeat?.errors | json}}</span> -->
         </div>
     </div>
-    <div formGroupName="address">
-        <div>
-            <span>省份：</span>
-            <select formControlName="province" >
-                <option value="">请选择省份</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-        </div>
-        <div>
-            <span>城市：</span>
-            <select formControlName="city" >
-                <option value="">请选择城市</option> 
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-        </div>
-        <div>
-            <span>区县：</span>
-            <select formControlName="area" >
-                <option value="">请选择区县</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-        </div>
+    <div formArrayName="addrs">
+        <button (click)="addAddr()">添加地址</button>
+        <div *ngFor="let item of user.controls['addrs']['controls'];let i = index;">
+            <div [formGroupName]="i">
+                地址{{i+1}}:
+                <label>
+                    <span>省份：</span>
+                    <select formControlName="province" >
+                        <option value="">请选择省份</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </label>
+                <label>
+                    <span>城市：</span>
+                    <select formControlName="city" >
+                        <option value="">请选择城市</option> 
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </label>
+                <label>
+                    <span>区县：</span>
+                    <select formControlName="area" >
+                        <option value="">请选择区县</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </label>
+            </div>
+
+        </div> 
     </div>
     <button type="submit" >注册</button>
-</form> 
+</form>  
